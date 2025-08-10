@@ -20,5 +20,5 @@
       failed_when: systemctl_status.rc > 1
 
   roles:
-    - role: hemanth22.cronjobs
+    - role: hemanth22.rhelupgradechecks
       tags: molecule-idempotence-notest
