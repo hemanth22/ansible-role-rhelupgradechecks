@@ -1,3 +1,74 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# tasks file for hemanth22.rhelupgradechecks
+- name: Get hostname of remote host
+  ansible.builtin.shell: hostname
+  register: custom_hostname
+
+- name: Get whoami of remote host
+  ansible.builtin.shell: whoami
+  register: custom_whoami
+
+- name: Create RHELUpgradeChecks directory in user's home
+  file:
+    path: "/home/{{ custom_whoami.stdout }}/RHELUpgradeChecks"
+    state: directory
+    mode: '0755'
+
+- name: Run crontab -l and save output
+  ansible.builtin.shell: crontab -l
+  async: 5
+  poll: 5
+  register: cron_result
+  ignore_errors: true
+
+- name: Run sudo -l and save output
+  ansible.builtin.shell: sudo -l
+  async: 5
+  poll: 5
+  register: sudo_result
+  ignore_errors: true
+
+- name: Run chage -l for root and save output
+  ansible.builtin.shell: chage -l
+  async: 5
+  poll: 5
+  register: chage_result
+  ignore_errors: true
+
+- name: Save crontab output to file on remote host
+  ansible.builtin.copy:
+    dest: "/home/{{ custom_whoami.stdout }}/RHELUpgradeChecks/{{ prefix }}_{{ custom_hostname.stdout }}_crontab.txt"
+    content: "{{ (cron_result.stdout + cron_result.stderr) | default('No crontab for this user') }}"
+
+- name: Save sudo -l output to file on remote host
+  ansible.builtin.copy:
+    dest: "/home/{{ custom_whoami.stdout }}/RHELUpgradeChecks/{{ prefix }}_{{ custom_hostname.stdout }}_sudo.txt"
+    content: "{{ (sudo_result.stdout + sudo_result.stderr) | default('') }}"
+
+- name: Save chage -l output to file on remote host
+  ansible.builtin.copy:
+    dest: "/home/{{ custom_whoami.stdout }}/RHELUpgradeChecks/{{ prefix }}_{{ custom_hostname.stdout }}_chage.txt"
+    content: "{{ (chage_result.stdout + chage_result.stderr) | default('') }}"
+
+- name: Ensure to backup of .bashrc file
+  ansible.builtin.copy:
+    src: "/home/{{ custom_whoami.stdout }}/.bashrc"
+    dest: "/home/{{ custom_whoami.stdout }}/RHELUpgradeChecks/{{ prefix }}_{{ custom_hostname.stdout }}_bashrc.txt"
+    remote_src: true
+
+- name: Ensure to backup of known_host file
+  ansible.builtin.copy:
+    src: "/home/{{ custom_whoami.stdout }}/.ssh/known_hosts"
+    dest: "/home/{{ custom_whoami.stdout }}/RHELUpgradeChecks/{{ prefix }}_{{ custom_hostname.stdout }}_known_hosts.txt"
+    remote_src: true
+
+- name: Ensure to backup of authorized_keys file
+  ansible.builtin.copy:
+    src: "/home/{{ custom_whoami.stdout }}/.ssh/authorized_keys"
+    dest: "/home/{{ custom_whoami.stdout }}/RHELUpgradeChecks/{{ prefix }}_{{ custom_hostname.stdout }}_authorized_keys.txt"
+    remote_src: true
+
+- name: Ensure to backup of fstab file
+  ansible.builtin.copy:
+    src: /etc/fstab
+    dest: "/home/{{ custom_whoami.stdout }}/RHELUpgradeChecks/{{ prefix }}_{{ custom_hostname.stdout }}_fstab.txt"
+    remote_src: true
