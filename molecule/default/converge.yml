@@ -19,6 +19,8 @@
       changed_when: false
       failed_when: systemctl_status.rc > 1
 
+
   roles:
-    - role: hemanth22.rhelupgradechecks
+    - role: geerlingguy.java
+    - role: geerlingguy.jenkins
       tags: molecule-idempotence-notest
