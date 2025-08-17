@@ -22,5 +22,6 @@
 
   roles:
     - role: hemanth22.sshconfig
+      tags: molecule-idempotence-notest
     - role: hemanth22.rhelupgradechecks
       tags: molecule-idempotence-notest
