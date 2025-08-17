@@ -41,4 +41,5 @@ GPL-3.0-only
 Author Information
 ------------------
 
-This role was created in 2025 by Hemanth BITRA. Author Website: bitroid.in
+This role was created in 2025 by Hemanth BITRA.  
+Author Website: bitroid.in
