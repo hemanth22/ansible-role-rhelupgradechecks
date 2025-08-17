@@ -21,6 +21,6 @@
 
 
   roles:
-    - role: geerlingguy.java
-    - role: geerlingguy.jenkins
+    - role: hemanth22.sshconfig
+    - role: hemanth22.rhelupgradechecks
       tags: molecule-idempotence-notest
