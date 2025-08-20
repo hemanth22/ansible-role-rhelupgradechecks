@@ -27,7 +27,6 @@ Including an example of how to use your role (for instance, with variables passe
 ---
 - hosts: localhost
   remote_user: root
-  gather_facts: true
   roles:
     - hemanth22.rhelupgradechecks
       vars:
