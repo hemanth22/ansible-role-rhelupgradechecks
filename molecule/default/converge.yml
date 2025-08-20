@@ -1,6 +1,7 @@
 ---
 - name: Converge
   hosts: all
+  gather_facts: true
 
   pre_tasks:
     - name: Update apt cache.
@@ -24,4 +25,3 @@
     - role: hemanth22.sshconfig
       tags: molecule-idempotence-notest
     - role: hemanth22.rhelupgradechecks
-      tags: molecule-idempotence-notest
